@@ -41,7 +41,7 @@ RSpec.describe User, type: :model do
   context "Username attribute" do
     it "must not duplicated" do 
       user1=create(:user,username:"agung")
-      user2=build(:user,email:"agung")
+      user2=build(:user,username:"agung")
       expect(user1).to be_valid
       expect(user2).to_not be_valid
     end
