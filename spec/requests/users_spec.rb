@@ -30,7 +30,6 @@ RSpec.describe "/users", type: :request do
         create(:user)
         post login_email_url, params: { user: valid_attributes }
         expect(response).to have_http_status(:ok)
-        expect(response).to eq("tes")
       end
     end
 
@@ -39,7 +38,6 @@ RSpec.describe "/users", type: :request do
         create(:user,email:"agung1@gmail.com")
         post login_email_url, params: { user: valid_attributes }
         expect(response).to have_http_status(:unauthorized)
-        expect(response).to eq("tes")
       end
     end
   end
@@ -51,6 +49,7 @@ RSpec.describe "/users", type: :request do
         expect {
           post register_email_url, params: { user: valid_attributes }
         }.to change(User, :count).by(1)
+        expect(response).to have_http_status(:ok)
       end
 
     end
