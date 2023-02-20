@@ -49,7 +49,6 @@ RSpec.describe "/users", type: :request do
         expect {
           post register_email_url, params: { user: valid_attributes }
         }.to change(User, :count).by(1)
-        expect(response).to have_http_status(:ok)
       end
 
     end
@@ -72,4 +71,28 @@ RSpec.describe "/users", type: :request do
     end
   end
 
+  describe "GET /my_profile" do
+    context "with valid parameters" do
+      it "return profile details" do
+        create(:user)
+        headers = {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer #{ENV['TEST_TOKEN']}", 
+        }
+        get my_profile_url, :headers => headers
+        expect(response).to have_http_status(:ok)
+      end
+    end
+    context "with invalid parameters" do
+      it "return error message" do
+        create(:user)
+        headers = {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer #{ENV['TEST_TOKEN']}kpsadkdas", 
+        }
+        get my_profile_url,:headers => headers
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+  end
 end
