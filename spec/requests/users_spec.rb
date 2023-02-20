@@ -15,7 +15,12 @@ require 'rails_helper'
 RSpec.describe "/users", type: :request do
   let(:valid_attributes) {
     user=build(:user)
-    user.as_json
+    {
+      "name" => "Agung Wijaya",
+      "username" => "agung-w",
+      "email" => "agung@gmail.com",
+      "password" => "password",
+    }
   }
 
 
@@ -44,9 +49,8 @@ RSpec.describe "/users", type: :request do
 
   describe "POST /email-registration" do
     context "with valid parameters" do
-      
       it "creates a new User" do
-        expect {
+        expect{
           post register_email_url, params: { user: valid_attributes }
         }.to change(User, :count).by(1)
       end
