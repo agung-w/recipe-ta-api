@@ -27,18 +27,18 @@ RSpec.describe "/users", type: :request do
   describe "POST /email-login" do
     context "with valid parameters" do
       it "return login information (token,name,etc.)" do
-        expect {
-          get email_login_url, params: { user: valid_attributes }
-        }.to have_http_status(:ok)
+        create(:user)
+        post login_email_url, params: { user: valid_attributes }
+        expect(response).to have_http_status(:ok)
         expect(response).to eq("tes")
       end
     end
 
     context "with invalid parameters" do
       it "return error message and its status code" do
-        expect {
-          post email_login_url, params: { user: invalid_attributes }
-        }.to have_http_status(:unauthorized)
+        create(:user,email:"agung1@gmail.com")
+        post login_email_url, params: { user: valid_attributes }
+        expect(response).to have_http_status(:unauthorized)
         expect(response).to eq("tes")
       end
     end
@@ -49,7 +49,7 @@ RSpec.describe "/users", type: :request do
       
       it "creates a new User" do
         expect {
-          post email_registration_url, params: { user: valid_attributes }
+          post register_email_url, params: { user: valid_attributes }
         }.to change(User, :count).by(1)
       end
 
@@ -58,7 +58,7 @@ RSpec.describe "/users", type: :request do
     context "with invalid parameters" do
       it "does not create a new User" do
         expect {
-          post email_registration_url, params: { user: invalid_attributes }
+          post register_email_url, params: { user: invalid_attributes }
         }.to change(User, :count).by(0)
       end
     end
@@ -67,7 +67,7 @@ RSpec.describe "/users", type: :request do
       it "does not create a new User" do
         create(:user)
         expect {
-          post email_registration_url, params: { user: valid_attributes }
+          post register_email_url, params: { user: valid_attributes }
         }.to change(User, :count).by(0)
       end
     end
