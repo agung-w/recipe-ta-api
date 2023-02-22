@@ -19,11 +19,15 @@ class UsersController < ApplicationController
   end
 
   def email_registration
+    @username=email_registration_params['username'] ? email_registration_params['username'] : User.generate_default_username
     @user = User.new(
       name:email_registration_params['name'],
-      username:email_registration_params['username'],
+      username:@username,
       email:email_registration_params['email'],
       password:email_registration_params['password'],
+      profile_pic_url:email_registration_params['profile_pic_url'],
+      followers_count:0,
+      following_count:0
     )
     if @user.save
       token = AuthTokenService.encode(payload(@user))
@@ -59,7 +63,7 @@ class UsersController < ApplicationController
   private
     # Only allow a list of trusted parameters through.
     def email_registration_params
-      params.require(:user).permit(:name, :email, :password, :username)
+      params.require(:user).permit(:name, :email, :password, :username,:profile_pic_url)
     end
 
     def email_login_params

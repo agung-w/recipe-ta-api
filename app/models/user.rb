@@ -9,6 +9,13 @@ class User < ApplicationRecord
     {
       username: username,
       name: name,
+      profile_pic_url: profile_pic_url,
+      followers_count: followers_count,
+      following_count: following_count
     }
+  end
+
+  def self.generate_default_username
+    "user_"+(self.count+1).to_s.rjust(8, '0')
   end
 end

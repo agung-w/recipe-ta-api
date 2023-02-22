@@ -17,9 +17,9 @@ RSpec.describe "/users", type: :request do
     user=build(:user)
     {
       "name" => "Agung Wijaya",
-      "username" => "agung-w",
       "email" => "agung@gmail.com",
       "password" => "password",
+      "username" => "agung-w",
     }
   }
 
@@ -49,13 +49,41 @@ RSpec.describe "/users", type: :request do
 
   describe "POST /email-registration" do
     context "with valid parameters" do
-      it "creates a new User" do
+      it "creates a new user" do
         expect{
           post register_email_url, params: { user: valid_attributes }
         }.to change(User, :count).by(1)
+        expect(User.first.username).to eq("agung-w")
       end
-
+      it "only accept name, email, password, and username params" do
+        expect{
+          post register_email_url, params: { user: 
+            {
+              "name" => "Agung Wijaya",
+              "email" => "agung@gmail.com",
+              "password" => "password",
+              "username" => "agung-w",
+            } 
+          }
+        }.to change(User, :count).by(1)
+        expect(User.first.username).to eq("agung-w")
+        expect(User.first.followers_count).to eq(0)
+      end
+      it "still create user and generate default username if username not given" do
+        expect{
+          post register_email_url, params: { user: 
+            {
+              "name" => "Agung Wijaya",
+              "email" => "agung@gmail.com",
+              "password" => "password",
+            } 
+          }
+        }.to change(User, :count).by(1)
+        expect(User.first.username).to eq("user_00000001")
+        expect(User.first.followers_count).to eq(0)
+      end
     end
+
 
     context "with invalid parameters" do
       it "does not create a new User" do
