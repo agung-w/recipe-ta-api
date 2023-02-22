@@ -1,6 +1,4 @@
 class UsersController < ApplicationController
-  before_action :authorize_request, only: %i[my_profile]
-
   def email_login
     @user = User.find_by(email:email_login_params[:email])
     if @user&.authenticate(email_login_params[:password]) 
@@ -44,14 +42,21 @@ class UsersController < ApplicationController
     end
   end
 
-  def my_profile
-    render json:@user
+  def profile
+    @user=User.find_by(username:params[:username])
+    if @user
+      render json:@user.as_json
+    else
+      render json:{
+        "status": 404,
+        "message": "User not found"
+      },status: :not_found
+    end
   end
 
 
 
   private
-
     # Only allow a list of trusted parameters through.
     def email_registration_params
       params.require(:user).permit(:name, :email, :password, :username)

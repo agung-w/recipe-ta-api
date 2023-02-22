@@ -75,27 +75,19 @@ RSpec.describe "/users", type: :request do
     end
   end
 
-  describe "GET /my_profile" do
+  describe "GET /profile" do
     context "with valid parameters" do
       it "return profile details" do
-        create(:user)
-        headers = {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer #{ENV['TEST_TOKEN']}", 
-        }
-        get my_profile_url, :headers => headers
+        user=create(:user)
+        get profile_url(username: user.username )
         expect(response).to have_http_status(:ok)
       end
     end
     context "with invalid parameters" do
       it "return error message" do
-        create(:user)
-        headers = {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer #{ENV['TEST_TOKEN']}kpsadkdas", 
-        }
-        get my_profile_url,:headers => headers
-        expect(response).to have_http_status(:unauthorized)
+        user=create(:user)
+        get profile_url(username: user.username*2 )
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
