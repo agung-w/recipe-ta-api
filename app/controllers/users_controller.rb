@@ -1,4 +1,7 @@
 class UsersController < ApplicationController
+  skip_before_action :verify_authenticity_token
+  before_action :authorize_request, only: %i[my_profile]
+
   def email_login
     @user = User.find_by(email:email_login_params[:email])
     if @user&.authenticate(email_login_params[:password]) 
@@ -49,7 +52,13 @@ class UsersController < ApplicationController
   def profile
     @user=User.find_by(username:params[:username])
     if @user
-      render json:@user.as_json
+      render json: {
+        "status": 200,
+        "message": "Sucess",
+        "data": {
+          "user": @user.as_json
+        }
+      }, status: :ok
     else
       render json:{
         "status": 404,
@@ -58,6 +67,22 @@ class UsersController < ApplicationController
     end
   end
 
+  def my_profile
+    if @current_user
+      render json:{
+        "status": 200,
+        "message": "Sucess",
+        "data": {
+          "user": @current_user.as_json
+        }
+      },status: :ok
+    else
+      render json:{
+        "status": 404,
+        "message": "User not found"
+      },status: :not_found
+    end
+  end
 
 
   private

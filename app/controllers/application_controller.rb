@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   def authorize_request
     token,_options=token_and_options(request)
     decoded=AuthTokenService.decode(token)
-    @user=User.find_by!(email:decoded['email'])
+    @current_user=User.find_by!(username:decoded['username'])
 
     rescue ActiveRecord::RecordNotFound,JWT::DecodeError => e
       render json:{ 
@@ -16,6 +16,7 @@ class ApplicationController < ActionController::Base
     {
       'email':user.email,
       'name':user.name,
+      'username':user.username,
       'iat':Time.now.to_i
     }
   end
