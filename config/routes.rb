@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :follows
   # constraints subdomain: 'api' do
   #   post '/register/email', to: 'users#email_registration'
   #   post '/login/email', to: 'users#email_login'

@@ -1,4 +1,10 @@
 class User < ApplicationRecord
+  has_many :received_follows, foreign_key: :followed_id, class_name: "Follow"
+  has_many :followers, through: :received_follows, source: :user #, -> { distinct }
+
+  has_many :given_follows, foreign_key: :user_id, class_name: "Follow"
+  has_many :followings, through: :given_follows, source: :followed #, -> { distinct }
+
   has_secure_password
   validates :name, length: { in: 3..60 }, format: { with: /\A[a-zA-Z ]+\z/,message: "only allows letters" }
   validates :email, email:true ,uniqueness: true
