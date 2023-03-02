@@ -17,119 +17,108 @@ RSpec.describe "/follows", type: :request do
   # This should return the minimal set of attributes required to create a valid
   # Follow. As you add validations to Follow, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
+  let(:follow_attributes) {
+    {
+      "username" => "tes-123"
+    }
   }
 
-  let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
-  }
-
-  describe "GET /index" do
-    it "renders a successful response" do
-      Follow.create! valid_attributes
-      get follows_url
-      expect(response).to be_successful
-    end
-  end
-
-  describe "GET /show" do
-    it "renders a successful response" do
-      follow = Follow.create! valid_attributes
-      get follow_url(follow)
-      expect(response).to be_successful
-    end
-  end
-
-  describe "GET /new" do
-    it "renders a successful response" do
-      get new_follow_url
-      expect(response).to be_successful
-    end
-  end
-
-  describe "GET /edit" do
-    it "renders a successful response" do
-      follow = Follow.create! valid_attributes
-      get edit_follow_url(follow)
-      expect(response).to be_successful
-    end
-  end
-
-  describe "POST /create" do
-    context "with valid parameters" do
-      it "creates a new Follow" do
-        expect {
-          post follows_url, params: { follow: valid_attributes }
+  describe "POST /follow" do
+    context "follow other user" do
+      it "return current user following count" do
+        user1=create(:user)
+        user2=create(:user,email:"a"+user1.email,username:"tes-123")
+        headers = {
+          "Authorization": "Bearer #{ENV['TEST_TOKEN']}", 
+        }
+        expect{
+          post follow_url, params: { follow: follow_attributes }, :headers => headers
         }.to change(Follow, :count).by(1)
-      end
-
-      it "redirects to the created follow" do
-        post follows_url, params: { follow: valid_attributes }
-        expect(response).to redirect_to(follow_url(Follow.last))
+        expect(response).to have_http_status(:ok)
       end
     end
 
-    context "with invalid parameters" do
-      it "does not create a new Follow" do
-        expect {
-          post follows_url, params: { follow: invalid_attributes }
+
+    context "follow followed user" do
+      it "return error message and its status code" do
+        user1=create(:user)
+        user2=create(:user,email:"a"+user1.email,username:"tes-123")
+        create(:follow,user:user1,followed:user2)
+        headers = {
+          "Authorization": "Bearer #{ENV['TEST_TOKEN']}", 
+        }
+        post follow_url, params: { follow: follow_attributes }, :headers => headers
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+
+    context "follow unregistered user" do
+      it "return error message and its status code" do
+        user1=create(:user)
+        headers = {
+          "Authorization": "Bearer #{ENV['TEST_TOKEN']}", 
+        }
+        post follow_url, params: { follow: follow_attributes }, :headers => headers
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context "follow user it self" do
+      it "return error message and its status code" do
+        user=create(:user)
+        headers = {
+          "Authorization": "Bearer #{ENV['TEST_TOKEN']}", 
+        }
+        post follow_url, params: { follow: {"username"=>user.username} }, :headers => headers
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+
+  end
+
+  describe "DELETE /unfollow" do
+    context "unfollow followed user" do
+      it "return current user following count" do
+        user1=create(:user)
+        user2=create(:user,email:"a"+user1.email,username:"tes-123")
+        headers = {
+          "Authorization": "Bearer #{ENV['TEST_TOKEN']}", 
+        }
+        
+        expect{
+          post follow_url, params: { follow: follow_attributes }, :headers => headers
+        }.to change(Follow, :count).by(1)
+        expect{
+          delete unfollow_url, params: { follow: follow_attributes }, :headers => headers
+        }.to change(Follow, :count).by(-1)
+      end
+    end
+
+
+    context "unfollow not followed user" do
+      it "return error message and its status code" do
+        user1=create(:user)
+        user2=create(:user,email:"a"+user1.email,username:"tes-123")
+        headers = {
+          "Authorization": "Bearer #{ENV['TEST_TOKEN']}", 
+        }
+        expect{
+          delete unfollow_url, params: { follow: follow_attributes }, :headers => headers
         }.to change(Follow, :count).by(0)
-      end
-
-    
-      it "renders a response with 422 status (i.e. to display the 'new' template)" do
-        post follows_url, params: { follow: invalid_attributes }
         expect(response).to have_http_status(:unprocessable_entity)
       end
-    
     end
-  end
 
-  describe "PATCH /update" do
-    context "with valid parameters" do
-      let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
-      }
-
-      it "updates the requested follow" do
-        follow = Follow.create! valid_attributes
-        patch follow_url(follow), params: { follow: new_attributes }
-        follow.reload
-        skip("Add assertions for updated state")
-      end
-
-      it "redirects to the follow" do
-        follow = Follow.create! valid_attributes
-        patch follow_url(follow), params: { follow: new_attributes }
-        follow.reload
-        expect(response).to redirect_to(follow_url(follow))
+    context "unfollow unregistered user" do
+      it "return error message and its status code" do
+        user1=create(:user)
+        headers = {
+          "Authorization": "Bearer #{ENV['TEST_TOKEN']}", 
+        }
+        delete unfollow_url, params: { follow: follow_attributes }, :headers => headers
+        expect(response).to have_http_status(:not_found)
       end
     end
 
-    context "with invalid parameters" do
-    
-      it "renders a response with 422 status (i.e. to display the 'edit' template)" do
-        follow = Follow.create! valid_attributes
-        patch follow_url(follow), params: { follow: invalid_attributes }
-        expect(response).to have_http_status(:unprocessable_entity)
-      end
-    
-    end
-  end
-
-  describe "DELETE /destroy" do
-    it "destroys the requested follow" do
-      follow = Follow.create! valid_attributes
-      expect {
-        delete follow_url(follow)
-      }.to change(Follow, :count).by(-1)
-    end
-
-    it "redirects to the follows list" do
-      follow = Follow.create! valid_attributes
-      delete follow_url(follow)
-      expect(response).to redirect_to(follows_url)
-    end
   end
 end

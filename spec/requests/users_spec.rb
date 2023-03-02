@@ -14,7 +14,6 @@ require 'rails_helper'
 
 RSpec.describe "/users", type: :request do
   let(:valid_attributes) {
-    user=build(:user)
     {
       "name" => "Agung Wijaya",
       "email" => "agung@gmail.com",

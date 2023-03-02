@@ -71,3 +71,4 @@ group :test do
 end
 
 gem 'jwt'
+gem "byebug", "~> 11.1", :groups => [:development, :test]

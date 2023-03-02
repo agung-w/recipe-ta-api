@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_02_064136) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_02_140438) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -31,8 +31,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_02_064136) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "profile_pic_url"
-    t.integer "followers_count"
-    t.integer "following_count"
+    t.integer "followers_count", default: 0
+    t.integer "following_count", default: 0
+    t.integer "bookmark_count", default: 0
+    t.integer "posted_recipe_count", default: 0
   end
 
   add_foreign_key "follows", "users"

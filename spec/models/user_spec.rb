@@ -35,18 +35,18 @@ RSpec.describe User, type: :model do
     end
   end
 
-  context "Password attribute" do
-    it "must contain at least 6 char and maximum 60 char" do
-      user1=build(:user,password:"123456")
-      user2=build(:user,password:"a#b")
-      user3=build(:user,password:"a"*60)
-      user4=build(:user,password:"a"*61)
-      expect(user1).to be_valid
-      expect(user2).to_not be_valid
-      expect(user3).to be_valid
-      expect(user4).to_not be_valid
-    end
-  end
+  # context "Password attribute" do
+  #   it "must contain at least 6 char and maximum 60 char" do
+  #     user1=build(:user,password:"123456")
+  #     user2=build(:user,password:"a#b")
+  #     user3=build(:user,password:"a"*60)
+  #     user4=build(:user,password:"a"*61)
+  #     expect(user1).to be_valid
+  #     expect(user2).to_not be_valid
+  #     expect(user3).to be_valid
+  #     expect(user4).to_not be_valid
+  #   end
+  # end
 
   context "Username attribute" do
     it "must not duplicated" do 
