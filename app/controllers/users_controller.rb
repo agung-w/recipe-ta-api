@@ -86,7 +86,6 @@ class UsersController < ApplicationController
 
 
   private
-    # Only allow a list of trusted parameters through.
     def email_registration_params
       params.require(:user).permit(:name, :email, :password, :username,:profile_pic_url)
     end
