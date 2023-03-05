@@ -16,7 +16,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_05_110129) do
 
   create_table "cooking_steps", force: :cascade do |t|
     t.bigint "recipe_id", null: false
-    t.string "description"
+    t.string "description", limit: 1000, null: false
     t.string "pic_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
