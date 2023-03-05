@@ -6,12 +6,23 @@ RSpec.describe RecipeIngredient, type: :model do
       recipe_ingredient=build(:recipe_ingredient)
       expect(recipe_ingredient).to be_valid
     end
+    it "is valid when metric is nil" do
+      recipe_ingredient=build(:recipe_ingredient,metric:nil)
+      expect(recipe_ingredient).to be_valid
+    end
+    it "is valid when quantity is nil" do
+      recipe_ingredient=build(:recipe_ingredient,quantity:nil)
+      expect(recipe_ingredient).to be_valid
+    end
 
-    it "is invalid when name is nil or name length > 250" do
-      ingredient=build(:ingredient,name:nil)
-      expect(ingredient).to_not be_valid
-      ingredient=build(:ingredient,name:"a"*251)
-      expect(ingredient).to_not be_valid
+    it "is invalid when recipe is nil" do
+      recipe_ingredient=build(:recipe_ingredient,recipe:nil)
+      expect(recipe_ingredient).to_not be_valid
+    end
+
+    it "is invalid when ingredient is nil" do
+      recipe_ingredient=build(:recipe_ingredient,ingredient:nil)
+      expect(recipe_ingredient).to_not be_valid
     end
   end
 end

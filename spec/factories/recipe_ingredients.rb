@@ -3,6 +3,6 @@ FactoryBot.define do
     association :recipe 
     association :ingredient 
     quantity { 1 }
-    association :metric 
+    association :metric
   end
 end
