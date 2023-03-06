@@ -72,3 +72,4 @@ end
 
 gem 'jwt'
 gem "byebug", "~> 11.1", :groups => [:development, :test]
+gem 'composite_primary_keys', '~> 14.0', '>= 14.0.6'
