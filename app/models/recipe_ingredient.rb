@@ -8,8 +8,10 @@ class RecipeIngredient < ApplicationRecord
   private
 
   def validate_associations
-    unless metric.present?
-      errors.add(:metric, 'didnt exist') 
+    if metric!=nil
+      unless metric.present? 
+        errors.add(:metric, 'didnt exist') 
+      end
     end
   end
 end
