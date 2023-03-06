@@ -37,6 +37,24 @@ class RecipesController < ApplicationController
     end
   end
 
+  def search
+    @recipe=Recipe.where("lower(title) LIKE '%#{params[:query].downcase}%'")
+    if @recipe
+      render json: {
+        "status": 200,
+        "message": "Sucess",
+        "data": {
+          "recipe": @recipe
+        }
+      }, status: :ok 
+    else
+      render json:{
+        "status": 404,
+        "message": "Recipe not found"
+      },status: :not_found
+    end
+  end
+  
   private
   def recipe_params
     params.require(:recipe).permit(

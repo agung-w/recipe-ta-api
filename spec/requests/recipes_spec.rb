@@ -65,7 +65,7 @@ RSpec.describe "Recipes", type: :request do
       "Authorization": "Bearer #{ENV['TEST_TOKEN']}", 
     }
     context "with valid parameters" do
-      it "return profile details" do
+      it "return recipe details" do
         recipe=create(:recipe)
         get recipe_url(id: recipe.id ), :headers => headers
         expect(response).to have_http_status(:ok)
@@ -87,4 +87,24 @@ RSpec.describe "Recipes", type: :request do
     end
   end
   
+  describe "GET /recipe/search/:query" do
+    context "with valid parameters" do
+      it "return recipe list" do
+        recipe=create(:recipe,title:"MyString")
+        get recipe_search_url(query: "string" )
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)["data"]["recipe"][0]["title"]).to eq("MyString")
+        expect(JSON.parse(response.body)["data"]["recipe"].length).to eq(1)
+      end
+    end
+    context "query not found" do
+      it "return status ok and blank recipe list" do
+        recipe=create(:recipe,title:"MyString")
+        get recipe_search_url(query: "djaksdmkalsdnas" )
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)["data"]["recipe"]).to be_blank
+      end
+    end
+
+  end
 end
