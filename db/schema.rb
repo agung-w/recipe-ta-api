@@ -14,8 +14,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_05_110129) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "cooking_steps", force: :cascade do |t|
+  create_table "cooking_steps", id: false, force: :cascade do |t|
     t.bigint "recipe_id", null: false
+    t.integer "step", null: false
     t.string "description", limit: 1000, null: false
     t.string "pic_url"
     t.datetime "created_at", null: false

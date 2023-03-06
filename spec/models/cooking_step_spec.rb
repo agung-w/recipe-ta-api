@@ -7,6 +7,13 @@ RSpec.describe CookingStep, type: :model do
       expect(cooking_step).to be_valid
     end
 
+    it "is valid when step is not duplicated" do
+      recipe=create(:recipe)
+      cooking_step=create(:cooking_step,recipe:recipe,step:1)
+      cooking_step=build(:cooking_step,recipe:recipe,step:2)
+      expect(cooking_step).to be_valid
+    end
+    
     it "is valid when pic_url is nil" do
       cooking_step=build(:cooking_step,pic_url:nil)
       expect(cooking_step).to be_valid
@@ -14,6 +21,18 @@ RSpec.describe CookingStep, type: :model do
 
     it "is invalid when recipe is nil" do
       cooking_step=build(:cooking_step,recipe:nil)
+      expect(cooking_step).to_not be_valid
+    end
+
+    it "is invalid when step is nil" do
+      cooking_step=build(:cooking_step,step:nil)
+      expect(cooking_step).to_not be_valid
+    end
+
+    it "is invalid when step is duplicated" do
+      recipe=create(:recipe)
+      cooking_step=create(:cooking_step,recipe:recipe)
+      cooking_step=build(:cooking_step,recipe:recipe)
       expect(cooking_step).to_not be_valid
     end
 
