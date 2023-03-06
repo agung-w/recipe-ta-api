@@ -1,6 +1,6 @@
 class RecipesController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :authorize_request, only: %i[create]
+  before_action :authorize_request, only: %i[create show]
   def create
     @recipe=Recipe.new(recipe_params)
     if @recipe.save
@@ -16,6 +16,24 @@ class RecipesController < ApplicationController
         "status": 422,
         "message": @recipe.errors
       },status: :unprocessable_entity
+    end
+  end
+
+  def show
+    @recipe=Recipe.find_by(id:params[:id])
+    if @recipe
+      render json: {
+        "status": 200,
+        "message": "Sucess",
+        "data": {
+          "recipe": @recipe.as_json
+        }
+      }, status: :ok 
+    else
+      render json:{
+        "status": 404,
+        "message": "Recipe not found"
+      },status: :not_found
     end
   end
 

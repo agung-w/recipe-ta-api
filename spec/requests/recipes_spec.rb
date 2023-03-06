@@ -60,5 +60,31 @@ RSpec.describe "Recipes", type: :request do
     end
   end
 
+  describe "GET /recipe/:id" do
+    headers = {
+      "Authorization": "Bearer #{ENV['TEST_TOKEN']}", 
+    }
+    context "with valid parameters" do
+      it "return profile details" do
+        recipe=create(:recipe)
+        get recipe_url(id: recipe.id ), :headers => headers
+        expect(response).to have_http_status(:ok)
+      end
+    end
+    context "with invalid parameters" do
+      it "return error message" do
+        recipe=create(:recipe)
+        get recipe_url(id: recipe.id*2 ), :headers => headers
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+    context "without auth token given" do
+      it "return error message" do
+        recipe=create(:recipe)
+        get recipe_url(id: recipe.id )
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+  end
   
 end

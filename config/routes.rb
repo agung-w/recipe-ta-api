@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   delete '/unfollow', to: 'follows#unfollow'
 
   post '/recipe/create', to: 'recipes#create'
+  get '/recipe/:id', to: 'recipes#show', :as => 'recipe'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
