@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_09_071801) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_09_075945) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -47,6 +47,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_09_071801) do
     t.float "weight"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "recipe_comments", id: false, force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "recipe_id", null: false
+    t.string "content", limit: 3000, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recipe_id"], name: "index_recipe_comments_on_recipe_id"
+    t.index ["user_id"], name: "index_recipe_comments_on_user_id"
   end
 
   create_table "recipe_ingredients", id: false, force: :cascade do |t|
@@ -117,6 +127,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_09_071801) do
   add_foreign_key "cooking_steps", "recipes"
   add_foreign_key "follows", "users"
   add_foreign_key "follows", "users", column: "followed_id"
+  add_foreign_key "recipe_comments", "recipes"
+  add_foreign_key "recipe_comments", "users"
   add_foreign_key "recipe_ingredients", "ingredients"
   add_foreign_key "recipe_ingredients", "metrics"
   add_foreign_key "recipe_ingredients", "recipes"
