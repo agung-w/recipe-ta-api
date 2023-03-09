@@ -2,31 +2,31 @@ class RecipesController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :authorize_request, only: %i[create show]
   def create
-    @recipe=Recipe.new(recipe_params)
-    if @recipe.save
+    recipe=Recipe.new(recipe_params)
+    if recipe.save
       render json: {
         "status": 200,
         "message": "Sucess",
         "data": {
-          "recipe": @recipe.as_json(Recipe.recipe_detail_attr)
+          "recipe": recipe.as_json(Recipe.recipe_detail_attr)
         }
       }, status: :ok 
     else
       render json:{
         "status": 422,
-        "message": @recipe.errors
+        "message": recipe.errors
       },status: :unprocessable_entity
     end
   end
 
   def show
-    @recipe=Recipe.find_by(id:params[:id])
-    if @recipe
+    recipe=Recipe.find_by(id:params[:id])
+    if recipe
       render json: {
         "status": 200,
         "message": "Sucess",
         "data": {
-          "recipe": @recipe.as_json(Recipe.recipe_detail_attr)
+          "recipe": recipe.as_json(Recipe.recipe_detail_attr)
         }
       }, status: :ok 
     else
@@ -38,13 +38,13 @@ class RecipesController < ApplicationController
   end
 
   def search
-    @recipe=Recipe.where("lower(title) LIKE '%#{params[:query].downcase}%'")
-    if @recipe
+    recipe=Recipe.where("lower(title) LIKE '%#{params[:query].downcase}%'")
+    if recipe
       render json: {
         "status": 200,
         "message": "Sucess",
         "data": {
-          "recipes": @recipe.as_json(Recipe.recipe_attr)
+          "recipes": recipe.as_json(Recipe.recipe_attr)
         }
       }, status: :ok 
     else

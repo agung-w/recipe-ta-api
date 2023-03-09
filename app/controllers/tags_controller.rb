@@ -1,13 +1,13 @@
 class TagsController < ApplicationController
 
   def list
-    @tags = Tag.all()
-    if @tags
+    tags = Tag.all()
+    if tags
       render json: {
         "status": 200,
         "message": "Sucess",
         "data": {
-          "tags": @tags.as_json(Tag.tag_attr)
+          "tags": tags.as_json(Tag.tag_attr)
         }
       }, status: :ok 
     else

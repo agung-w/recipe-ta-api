@@ -3,9 +3,9 @@ class UsersController < ApplicationController
   before_action :authorize_request, only: %i[my_profile]
 
   def email_login
-    @user = User.find_by(email:email_login_params[:email])
-    if @user&.authenticate(email_login_params[:password]) 
-      token = AuthTokenService.encode(payload(@user))
+    user = User.find_by(email:email_login_params[:email])
+    if user&.authenticate(email_login_params[:password]) 
+      token = AuthTokenService.encode(payload(user))
       render json: {
         "status": 200,
         "message": "Sucess",
@@ -22,18 +22,18 @@ class UsersController < ApplicationController
   end
 
   def email_registration
-    @username=email_registration_params['username'] ? email_registration_params['username'] : User.generate_default_username
-    @user = User.new(
+    username=email_registration_params['username'] ? email_registration_params['username'] : User.generate_default_username
+    user = User.new(
       name:email_registration_params['name'],
-      username:@username,
+      username:username,
       email:email_registration_params['email'],
       password:email_registration_params['password'],
       profile_pic_url:email_registration_params['profile_pic_url'],
       followers_count:0,
       following_count:0
     )
-    if @user.save
-      token = AuthTokenService.encode(payload(@user))
+    if user.save
+      token = AuthTokenService.encode(payload(user))
       render json: {
         "status": 200,
         "message": "Sucess",
@@ -44,19 +44,19 @@ class UsersController < ApplicationController
     else
       render json:{
         "status": 422,
-        "message": @user.errors
+        "message": user.errors
       },status: :unprocessable_entity
     end
   end
 
   def profile
-    @user=User.find_by(username:params[:username])
-    if @user
+    user=User.find_by(username:params[:username])
+    if user
       render json: {
         "status": 200,
         "message": "Sucess",
         "data": {
-          "user": @user.as_json(User.profile_detail_attr)
+          "user": user.as_json(User.profile_detail_attr)
         }
       }, status: :ok
     else
