@@ -6,7 +6,7 @@ class MetricsController < ApplicationController
         "status": 200,
         "message": "Sucess",
         "data": {
-          "metrics": @metrics
+          "metrics": @metrics.as_json(Metric.metric_attr)
         }
       }, status: :ok 
     else

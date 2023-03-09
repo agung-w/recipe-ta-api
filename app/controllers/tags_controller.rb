@@ -7,7 +7,7 @@ class TagsController < ApplicationController
         "status": 200,
         "message": "Sucess",
         "data": {
-          "tags": @tags
+          "tags": @tags.as_json(Tag.tag_attr)
         }
       }, status: :ok 
     else

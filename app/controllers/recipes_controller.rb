@@ -8,7 +8,7 @@ class RecipesController < ApplicationController
         "status": 200,
         "message": "Sucess",
         "data": {
-          "recipe": @recipe.as_json
+          "recipe": @recipe.as_json(Recipe.recipe_detail_attr)
         }
       }, status: :ok 
     else
@@ -26,7 +26,7 @@ class RecipesController < ApplicationController
         "status": 200,
         "message": "Sucess",
         "data": {
-          "recipe": @recipe.as_json
+          "recipe": @recipe.as_json(Recipe.recipe_detail_attr)
         }
       }, status: :ok 
     else
@@ -44,7 +44,7 @@ class RecipesController < ApplicationController
         "status": 200,
         "message": "Sucess",
         "data": {
-          "recipe": @recipe
+          "recipes": @recipe.as_json(Recipe.recipe_attr)
         }
       }, status: :ok 
     else

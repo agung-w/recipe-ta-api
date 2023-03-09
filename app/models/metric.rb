@@ -4,4 +4,7 @@ class Metric < ApplicationRecord
   validates :volume, numericality: true, allow_nil: true
   validates :weight, numericality: true, allow_nil: true
 
+  def self.metric_attr
+    {only:[:id,:name,:abbrev]}
+  end
 end

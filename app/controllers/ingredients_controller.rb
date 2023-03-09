@@ -6,7 +6,7 @@ class IngredientsController < ApplicationController
         "status": 200,
         "message": "Sucess",
         "data": {
-          "ingredient": @ingredient
+          "ingredient": @ingredient.as_json(Ingredient.ingredient_attr)
         }
       }, status: :ok 
     else

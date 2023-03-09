@@ -12,16 +12,13 @@ class User < ApplicationRecord
   validates :username,length: { in: 3..60 }, uniqueness: true,format: { with: /\A[a-zA-Z0-9_-]+\z/,message: "only allows letters, numbers, - and _" }
 
 
-  def as_json
-    {
-      username: username,
-      name: name,
-      profile_pic_url: profile_pic_url,
-      followers_count: followers_count,
-      following_count: following_count
-    }
+  def self.profile_attr
+    {only:[:username,:name,:profile_pic_url]}
   end
-  
+
+  def self.profile_detail_attr
+    {only:[:username,:name,:email,:profile_pic_url,:followers_count,:following_count]}
+  end
 
   def self.generate_default_username
     "user_"+(self.count+1).to_s.rjust(8, '0')

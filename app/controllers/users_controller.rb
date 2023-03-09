@@ -56,7 +56,7 @@ class UsersController < ApplicationController
         "status": 200,
         "message": "Sucess",
         "data": {
-          "user": @user.as_json
+          "user": @user.as_json(User.profile_detail_attr)
         }
       }, status: :ok
     else
@@ -73,7 +73,7 @@ class UsersController < ApplicationController
         "status": 200,
         "message": "Sucess",
         "data": {
-          "user": @current_user.as_json
+          "user": @current_user.as_json(User.profile_detail_attr)
         }
       },status: :ok
     else
