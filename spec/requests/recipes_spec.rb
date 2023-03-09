@@ -93,8 +93,8 @@ RSpec.describe "Recipes", type: :request do
         recipe=create(:recipe,title:"MyString")
         get recipe_search_url(query: "string" )
         expect(response).to have_http_status(:ok)
-        expect(JSON.parse(response.body)["data"]["recipe"][0]["title"]).to eq("MyString")
-        expect(JSON.parse(response.body)["data"]["recipe"].length).to eq(1)
+        expect(JSON.parse(response.body)["data"]["recipes"][0]["title"]).to eq("MyString")
+        expect(JSON.parse(response.body)["data"]["recipes"].length).to eq(1)
       end
     end
     context "query not found" do
