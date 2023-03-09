@@ -18,6 +18,12 @@ Rails.application.routes.draw do
 
 
   get '/ingredient/find/:name', to: 'ingredients#find', :as => 'ingredient-find'
+
+
+  get '/tag/list', to: 'tags#list'
+
+
+  get '/metric/list', to: 'metrics#list'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
