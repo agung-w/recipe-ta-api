@@ -91,7 +91,7 @@ RSpec.describe "Recipes", type: :request do
     context "with valid parameters" do
       it "return recipe list" do
         recipe=create(:recipe,title:"MyString")
-        get recipe_search_url(query: "string" )
+        get search_recipe_by_title_url(query: "string" )
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)["data"]["recipes"][0]["title"]).to eq("MyString")
         expect(JSON.parse(response.body)["data"]["recipes"].length).to eq(1)
@@ -100,11 +100,32 @@ RSpec.describe "Recipes", type: :request do
     context "query not found" do
       it "return status ok and blank recipe list" do
         recipe=create(:recipe,title:"MyString")
-        get recipe_search_url(query: "djaksdmkalsdnas" )
+        get search_recipe_by_title_url(query: "djaksdmkalsdnas" )
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)["data"]["recipe"]).to be_blank
       end
     end
 
+  end
+  describe "GET /search/recipe/by-ingredient/:query" do
+    context "with valid parameters" do
+      it "return recipe list" do
+        ingredient=create(:ingredient,name:"wortel")
+        recipe=create(:recipe,title:"MyString")
+        recipe_ingredient=create(:recipe_ingredient,recipe:recipe,ingredient:ingredient)
+        get search_recipe_by_ingredient_url(query: "st" )
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)["data"]["recipes"][0]["title"]).to eq("MyString")
+        expect(JSON.parse(response.body)["data"]["recipes"].length).to eq(1)
+      end
+    end
+    context "query not found" do
+      it "return status ok and blank recipe list" do
+        recipe=create(:recipe,title:"MyString")
+        get search_recipe_by_ingredient_url(query: "djaksdmkalsdnas" )
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)["data"]["recipe"]).to be_blank
+      end
+    end
   end
 end

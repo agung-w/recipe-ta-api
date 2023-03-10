@@ -14,7 +14,8 @@ Rails.application.routes.draw do
 
   post '/recipe/create', to: 'recipes#create'
   get '/recipe/:id', to: 'recipes#show', :as => 'recipe'
-  get '/recipe/search/:query', to: 'recipes#search', :as => 'recipe-search'
+  get '/search/recipe/by-title/:query', to: 'recipes#search_by_title', :as => 'search-recipe-by-title'
+  get '/search/recipe/by-ingredient/:query', to: 'recipes#search_by_ingredient', :as => 'search-recipe-by-ingredient'
 
 
   get '/ingredient/find/:name', to: 'ingredients#find', :as => 'ingredient-find'

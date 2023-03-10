@@ -37,7 +37,7 @@ class RecipesController < ApplicationController
     end
   end
 
-  def search
+  def search_by_title
     recipe=Recipe.where("lower(title) LIKE '%#{params[:query].downcase}%'")
     if recipe
       render json: {
@@ -51,6 +51,24 @@ class RecipesController < ApplicationController
       render json:{
         "status": 404,
         "message": "Recipe not found"
+      },status: :not_found
+    end
+  end
+
+  def search_by_ingredient
+    recipe=Recipe.joins(:recipe_ingredients).joins(:ingredients).where("lower(ingredients.name) SIMILAR TO '%#{params[:query].split(',')}%' ").distinct
+    if recipe
+      render json: {
+        "status": 200,
+        "message": "Sucess",
+        "data": {
+          "recipes": recipe.as_json(Recipe.recipe_detail_attr)
+        }
+      }, status: :ok 
+    else
+      render json:{
+        "status": 404,
+        "message": recipe.errors
       },status: :not_found
     end
   end
