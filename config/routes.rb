@@ -17,6 +17,9 @@ Rails.application.routes.draw do
   get '/search/recipe/by-title/:query', to: 'recipes#search_by_title', :as => 'search-recipe-by-title'
   get '/search/recipe/by-ingredient/:query', to: 'recipes#search_by_ingredient', :as => 'search-recipe-by-ingredient'
 
+  get '/recipe-comments/:id', to: 'recipe_comments#show', :as => 'recipe-comments'
+  post '/recipe-comment', to: 'recipe_comments#create'
+
 
   get '/ingredient/find/:name', to: 'ingredients#find', :as => 'ingredient-find'
 
