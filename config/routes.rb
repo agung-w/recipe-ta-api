@@ -20,6 +20,8 @@ Rails.application.routes.draw do
   get '/recipe-comments/:id', to: 'recipe_comments#show', :as => 'recipe-comments'
   post '/recipe-comment', to: 'recipe_comments#create'
 
+  put '/save-recipe/:id', to: 'save_recipes#save', :as => 'save-recipe'
+  delete '/save-recipe/:id', to: 'save_recipes#remove'
 
   get '/ingredient/find/:name', to: 'ingredients#find', :as => 'ingredient-find'
 
