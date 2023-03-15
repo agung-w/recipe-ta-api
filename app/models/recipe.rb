@@ -15,7 +15,7 @@ class Recipe < ApplicationRecord
   accepts_nested_attributes_for :recipe_ingredients,:cooking_steps,:recipe_tags
 
   def as_json(options=nil)
-    super({ only: [:id,:title, :pic_url, :serving, :prep_time,:description, :created_at] }.merge(options || {}))
+    super({ only: [:id,:title, :poster_pic_url, :serving, :prep_time,:description, :created_at] }.merge(options || {}))
   end
 
   def self.recipe_attr
