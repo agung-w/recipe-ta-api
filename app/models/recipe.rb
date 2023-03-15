@@ -3,8 +3,8 @@ class Recipe < ApplicationRecord
 
   validates :title, length: { maximum: 100 },presence: true
   validates :description, length: { maximum: 1000 },presence: true
-  validates :prep_time, numericality: true
-  validates :serving, numericality: true
+  validates :prep_time, numericality: true, allow_nil: true
+  validates :serving, numericality: true, allow_nil: true
 
   has_many :cooking_steps
   has_many :recipe_ingredients

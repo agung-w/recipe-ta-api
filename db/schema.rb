@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_09_075945) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_15_154837) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -96,8 +96,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_09_075945) do
     t.string "poster_pic_url"
     t.string "description", limit: 1000, null: false
     t.integer "favorite_count", default: 0
-    t.integer "prep_time", null: false
-    t.integer "serving", null: false
+    t.integer "prep_time"
+    t.integer "serving"
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
