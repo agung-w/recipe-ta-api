@@ -62,7 +62,7 @@ class RecipesController < ApplicationController
         "status": 200,
         "message": "Sucess",
         "data": {
-          "recipes": recipe.as_json(Recipe.recipe_detail_attr)
+          "recipes": recipe.as_json(Recipe.recipe_attr)
         }
       }, status: :ok 
     else
