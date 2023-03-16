@@ -14,8 +14,8 @@ class Recipe < ApplicationRecord
 
   accepts_nested_attributes_for :recipe_ingredients,:cooking_steps,:recipe_tags
 
-  def as_json(options=nil)
-    super({ only: [:id,:title, :poster_pic_url, :serving, :prep_time,:description, :created_at] }.merge(options || {}))
+  def as_json(options=nil,user=nil)
+    super({ only: [:id,:title, :poster_pic_url, :serving, :prep_time,:description, :created_at] }.merge(options || {})).merge(is_saved:is_saved(user))
   end
 
   def self.recipe_attr
@@ -33,8 +33,13 @@ class Recipe < ApplicationRecord
         {user:User.profile_attr},
         {recipe_ingredients:RecipeIngredient.recipe_ingredient_attr},
         {cooking_steps:CookingStep.cooking_steps_attr},
-        {tags:Tag.tag_attr}
+        {tags:Tag.tag_attr},
       ]
     }
   end
+
+  def is_saved(user)
+    RecipeSavedByUser.find_by(user:user,recipe:self.id) ? true : nil
+  end
+
 end

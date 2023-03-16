@@ -1,6 +1,7 @@
 class RecipesController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :authorize_request, only: %i[create show]
+  before_action :authorize_request_or_not?, only: %i[search_by_title search_by_ingredient]
   def create
     recipe=Recipe.new(recipe_params)
     if recipe.save
@@ -8,7 +9,7 @@ class RecipesController < ApplicationController
         "status": 200,
         "message": "Sucess",
         "data": {
-          "recipe": recipe.as_json(Recipe.recipe_detail_attr)
+          "recipe": recipe.as_json(Recipe.recipe_detail_attr,@current_user)
         }
       }, status: :ok 
     else
@@ -26,7 +27,7 @@ class RecipesController < ApplicationController
         "status": 200,
         "message": "Sucess",
         "data": {
-          "recipe": recipe.as_json(Recipe.recipe_detail_attr)
+          "recipe": recipe.as_json(Recipe.recipe_detail_attr,@current_user)
         }
       }, status: :ok 
     else
@@ -38,13 +39,13 @@ class RecipesController < ApplicationController
   end
 
   def search_by_title
-    recipe=Recipe.where("lower(title) LIKE '%#{params[:query].downcase}%'")
-    if recipe
+    recipes=Recipe.where("lower(title) LIKE '%#{params[:query].downcase}%'")
+    if recipes
       render json: {
         "status": 200,
         "message": "Sucess",
         "data": {
-          "recipes": recipe.as_json(Recipe.recipe_attr)
+          "recipes": recipes.map { |r| r.as_json(Recipe.recipe_attr,@current_user) }
         }
       }, status: :ok 
     else
@@ -56,13 +57,13 @@ class RecipesController < ApplicationController
   end
 
   def search_by_ingredient
-    recipe=Recipe.joins(:recipe_ingredients).joins(:ingredients).where("lower(ingredients.name) SIMILAR TO '%#{params[:query].split(',')}%' ").distinct
-    if recipe
+    recipes=Recipe.joins(:recipe_ingredients).joins(:ingredients).where("lower(ingredients.name) SIMILAR TO '%#{params[:query].split(',')}%' ").distinct
+    if recipes
       render json: {
         "status": 200,
         "message": "Sucess",
         "data": {
-          "recipes": recipe.as_json(Recipe.recipe_attr)
+          "recipes": recipes.map { |r| r.as_json(Recipe.recipe_attr,@current_user) }
         }
       }, status: :ok 
     else

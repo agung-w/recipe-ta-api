@@ -12,6 +12,14 @@ class ApplicationController < ActionController::Base
       },status: :unauthorized
   end
 
+  def authorize_request_or_not?
+    token,_options=token_and_options(request)
+    decoded=AuthTokenService.decode(token)
+    @current_user=User.find_by!(username:decoded['username'])
+
+    rescue ActiveRecord::RecordNotFound,JWT::DecodeError => e
+  end
+
   def payload(user)
     {
       'email':user.email,
