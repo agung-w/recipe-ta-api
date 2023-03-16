@@ -1,6 +1,6 @@
 class IngredientsController < ApplicationController
   def find
-    ingredient=Ingredient.where(name:params[:name].downcase).first_or_create
+    ingredient=Ingredient.where(name:params[:name].downcase.tr('^A-Za-z0-9-.', ' ').squish!).first_or_create
     if ingredient.save
       render json: {
         "status": 200,
