@@ -2,6 +2,7 @@ class RecipesController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :authorize_request, only: %i[create show]
   before_action :authorize_request_or_not?, only: %i[search_by_title search_by_ingredient]
+  before_action :query_param, only: %i[search_by_title search_by_ingredient]
   def create
     recipe=Recipe.new(recipe_params)
     if recipe.save
@@ -39,7 +40,7 @@ class RecipesController < ApplicationController
   end
 
   def search_by_title
-    recipes=Recipe.where("lower(title) LIKE '%#{params[:query].downcase}%'")
+    recipes=Recipe.where("lower(title) LIKE '%#{query_param.downcase}%'")
     if recipes
       render json: {
         "status": 200,
@@ -57,7 +58,7 @@ class RecipesController < ApplicationController
   end
 
   def search_by_ingredient
-    recipes=Recipe.joins(:recipe_ingredients).joins(:ingredients).where("lower(ingredients.name) SIMILAR TO '%#{params[:query].split(',')}%' ").distinct
+    recipes=Recipe.joins(:recipe_ingredients).joins(:ingredients).where("lower(ingredients.name) SIMILAR TO '%#{query_param.split(',')}%' ").distinct
     if recipes
       render json: {
         "status": 200,
@@ -96,5 +97,19 @@ class RecipesController < ApplicationController
         :tag_id
       ],
     ).with_defaults(user_id: @current_user.id)
+  end
+
+  def query_param
+    query=params[:query].squish
+    if query.length < 1
+      render json: {
+        "status": 200,
+        "message": "Sucess",
+        "data": {
+          "recipes": []
+        }
+      }, status: :ok 
+    end
+    query
   end
 end
