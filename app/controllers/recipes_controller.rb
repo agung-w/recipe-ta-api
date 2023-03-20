@@ -1,7 +1,7 @@
 class RecipesController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :authorize_request, only: %i[create show get_created_recipe]
-  before_action :authorize_request_or_not?, only: %i[search_by_title search_by_ingredient get_saved_recipe]
+  before_action :authorize_request_or_not?, only: %i[search_by_title search_by_ingredient]
   before_action :query_param, only: %i[search_by_title search_by_ingredient]
   def create
     recipe=Recipe.new(recipe_params)
@@ -73,28 +73,6 @@ class RecipesController < ApplicationController
         "message": recipe.errors
       },status: :not_found
     end
-  end
-  
-  def get_created_recipe
-    recipes=Recipe.where(user:@current_user)
-    render json: {
-      "status": 200,
-      "message": "Sucess",
-      "data": {
-        "recipes": recipes.map { |r| r.as_json(Recipe.recipe_attr,@current_user) }
-      }
-    }, status: :ok 
-  end
-
-  def get_saved_recipe
-    recipes=Recipe.joins(:recipe_saved_by_user).where("recipe_saved_by_users.user_id = #{@current_user.id}")
-    render json: {
-      "status": 200,
-      "message": "Sucess",
-      "data": {
-        "recipes": recipes.map { |r| r.as_json(Recipe.recipe_attr,@current_user) }
-      }
-    }, status: :ok 
   end
   
   private

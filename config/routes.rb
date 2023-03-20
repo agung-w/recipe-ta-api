@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   post '/login/email', to: 'users#email_login'
   get '/profile/:username', to: 'users#profile', :as => 'profile'
   get '/my-profile', to: 'users#my_profile'
+  get '/created-recipe-by', to: 'users#get_created_recipe', :as => 'created-recipe-by'
+  get '/saved-recipe-by', to: 'users#get_saved_recipe', :as => 'saved-recipe-by'
 
   post '/follow', to: 'follows#follow'
   delete '/unfollow', to: 'follows#unfollow'
