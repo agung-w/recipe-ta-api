@@ -23,13 +23,13 @@ class UsersController < ApplicationController
   end
 
   def get_created_recipe
-    if(User.find_by(username:params[:username]))
+    if(user=User.find_by(username:params[:username]))
       recipes=Recipe.joins(:user).where(user: { username: params[:username] })
       render json: {
         "status": 200,
         "message": "Sucess",
         "data": {
-          "recipes": recipes.map { |r| r.as_json(Recipe.recipe_attr,@current_user) }
+          "recipes": recipes.map { |r| r.as_json(Recipe.recipe_attr,user) }
         }
       }, status: :ok 
     else
@@ -41,13 +41,13 @@ class UsersController < ApplicationController
   end
 
   def get_saved_recipe
-    if(User.find_by(username:params[:username]))
+    if(user=User.find_by(username:params[:username]))
       recipes=Recipe.joins(:recipe_saved_by_user).joins(:user).where(user: { username: params[:username] })
       render json: {
         "status": 200,
         "message": "Sucess",
         "data": {
-          "recipes": recipes.map { |r| r.as_json(Recipe.recipe_attr,@current_user) }
+          "recipes": recipes.map { |r| r.as_json(Recipe.recipe_attr,user) }
         }
       }, status: :ok 
     else
