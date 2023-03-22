@@ -1,7 +1,6 @@
 class UsersController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :authorize_request, only: %i[my_profile]
-  before_action :authorize_request_or_not?, only: %i[get_created_recipe get_saved_recipe]
 
 
   def email_login
@@ -24,19 +23,8 @@ class UsersController < ApplicationController
   end
 
   def get_created_recipe
-    if(params[:username].length>0)
+    if(User.find_by(username:params[:username]))
       recipes=Recipe.joins(:user).where(user: { username: params[:username] })
-    else
-      if(@current_user)
-        recipes=Recipe.where(user:@current_user)
-      else
-        render json:{ 
-          "status": 401,
-          "message":"Invalid token provided"
-        },status: :unauthorized
-      end
-    end
-    if recipes
       render json: {
         "status": 200,
         "message": "Sucess",
@@ -44,24 +32,17 @@ class UsersController < ApplicationController
           "recipes": recipes.map { |r| r.as_json(Recipe.recipe_attr,@current_user) }
         }
       }, status: :ok 
+    else
+      render json:{ 
+        "status": 404,
+        "message":"User not found"
+      },status: :not_found
     end
-    
   end
 
   def get_saved_recipe
-    if(params[:username].length>0)
+    if(User.find_by(username:params[:username]))
       recipes=Recipe.joins(:recipe_saved_by_user).joins(:user).where(user: { username: params[:username] })
-    else
-      if(@current_user)
-        recipes=Recipe.joins(:recipe_saved_by_user).where("recipe_saved_by_users.user_id = #{@current_user.id}")
-      else
-        render json:{ 
-          "status": 401,
-          "message":"Invalid token provided"
-        },status: :unauthorized
-      end
-    end
-    if recipes
       render json: {
         "status": 200,
         "message": "Sucess",
@@ -69,6 +50,11 @@ class UsersController < ApplicationController
           "recipes": recipes.map { |r| r.as_json(Recipe.recipe_attr,@current_user) }
         }
       }, status: :ok 
+    else
+      render json:{ 
+        "status": 404,
+        "message":"User not found"
+      },status: :not_found
     end
   end
 
