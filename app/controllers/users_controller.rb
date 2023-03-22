@@ -24,7 +24,7 @@ class UsersController < ApplicationController
   end
 
   def get_created_recipe
-    if(params[:username])
+    if(params[:username].length>0)
       recipes=Recipe.joins(:user).where(user: { username: params[:username] })
     else
       if(@current_user)
@@ -49,7 +49,7 @@ class UsersController < ApplicationController
   end
 
   def get_saved_recipe
-    if(params[:username])
+    if(params[:username].length>0)
       recipes=Recipe.joins(:recipe_saved_by_user).joins(:user).where(user: { username: params[:username] })
     else
       if(@current_user)
