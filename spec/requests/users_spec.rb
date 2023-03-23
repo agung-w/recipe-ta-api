@@ -30,7 +30,7 @@ RSpec.describe "/users", type: :request do
 
   describe "POST /email-login" do
     context "with valid parameters" do
-      it "return login information (token,name,etc.)" do
+      it "return login information (token.)" do
         create(:user)
         post login_email_url, params: { user: valid_attributes }
         expect(response).to have_http_status(:ok)

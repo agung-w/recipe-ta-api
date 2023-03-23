@@ -4,7 +4,7 @@ class UsersController < ApplicationController
 
 
   def email_login
-    user = User.find_by(email:email_login_params[:email])
+    user = User.find_by(email:email_login_params[:email].downcase)
     if user&.authenticate(email_login_params[:password]) 
       token = AuthTokenService.encode(payload(user))
       render json: {
@@ -61,9 +61,9 @@ class UsersController < ApplicationController
   def email_registration
     username=email_registration_params['username'] ? email_registration_params['username'] : User.generate_default_username
     user = User.new(
-      name:email_registration_params['name'],
-      username:username,
-      email:email_registration_params['email'],
+      name:email_registration_params['name'].capitalize,
+      username:username.downcase,
+      email:email_registration_params['email'].downcase,
       password:email_registration_params['password'],
       profile_pic_url:email_registration_params['profile_pic_url'],
       followers_count:0,
