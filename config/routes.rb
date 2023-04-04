@@ -31,6 +31,7 @@ Rails.application.routes.draw do
 
 
   get '/tag/list', to: 'tags#list'
+  get '/tag/find', to: 'tags#find', :as => 'tag-find'
 
 
   get '/metric/list', to: 'metrics#list'
