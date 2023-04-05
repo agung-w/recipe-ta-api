@@ -19,7 +19,7 @@ class TagsController < ApplicationController
   end
 
   def find
-    tag=Tag.where(name:params[:name].downcase.tr('^A-Za-z0-9-_', '').squish!).first_or_create
+    tag=Tag.where(name:params[:name].downcase.tr('^A-Za-z0-9 ', '').squish!).first_or_create
     if tag.save
       render json: {
         "status": 200,
