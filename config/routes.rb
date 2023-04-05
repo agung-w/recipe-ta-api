@@ -21,7 +21,8 @@ Rails.application.routes.draw do
   get '/created-recipe', to: 'recipes#get_created_recipe'
   get '/saved-recipe', to: 'recipes#get_saved_recipe'
 
-  get '/recipe-comments/:id', to: 'recipe_comments#show', :as => 'recipe-comments'
+  get '/recipe-comments/:id', to: 'recipe_comments#show_all', :as => 'recipe-comments'
+  get '/first-recipe-comment/:id', to: 'recipe_comments#show', :as => 'first-recipe-comment'
   post '/recipe-comment', to: 'recipe_comments#create'
 
   put '/save-recipe/:id', to: 'save_recipes#save', :as => 'save-recipe'

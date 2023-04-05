@@ -46,6 +46,39 @@ RSpec.describe "RecipeComments", type: :request do
       end
     end
   end
+
+  describe "GET /first-recipe-comment/:id" do
+    headers = {
+      "Authorization": "Bearer #{ENV['TEST_TOKEN']}", 
+    }
+    context "with valid parameters" do
+      it "return recipe details" do
+        user=create(:user)
+        recipe=create(:recipe,user:user)
+        recipe_comment1=create(:recipe_comment,user:user,recipe:recipe)
+        recipe_comment2=create(:recipe_comment,user:user,recipe:recipe)
+        get first_recipe_comment_url(id: recipe.id ), :headers => headers
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)["data"]["recipe_comment"]["content"]).to eq(recipe_comment1.content)
+      end
+      it "return ok status if recipe comment is empty" do
+        user=create(:user)
+        recipe=create(:recipe,user:user)
+        get first_recipe_comment_url(id: recipe.id), :headers => headers
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)["data"]["recipe_comment"]).to eq(nil)
+      end
+    end
+    
+    context "without auth token given" do
+      it "return error message" do
+        user=create(:user)
+        recipe=create(:recipe,user:user)
+        get first_recipe_comment_url(id: recipe.id )
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+  end
   
   describe "POST /recipe-comment" do
     headers = {
