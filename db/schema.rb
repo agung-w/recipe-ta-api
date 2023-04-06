@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_15_154837) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_06_070315) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -47,6 +47,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_15_154837) do
     t.float "weight"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "recipe_bundles", id: false, force: :cascade do |t|
+    t.bigint "recipe_id", null: false
+    t.string "description", null: false
+    t.string "title", null: false
+    t.float "price", null: false
+    t.integer "stock", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recipe_id"], name: "index_recipe_bundles_on_recipe_id"
   end
 
   create_table "recipe_comments", id: false, force: :cascade do |t|
@@ -127,6 +138,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_15_154837) do
   add_foreign_key "cooking_steps", "recipes"
   add_foreign_key "follows", "users"
   add_foreign_key "follows", "users", column: "followed_id"
+  add_foreign_key "recipe_bundles", "recipes"
   add_foreign_key "recipe_comments", "recipes"
   add_foreign_key "recipe_comments", "users"
   add_foreign_key "recipe_ingredients", "ingredients"
