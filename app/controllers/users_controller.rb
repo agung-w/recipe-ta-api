@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :authorize_request, only: %i[my_profile]
-  before_action :authorize_request_or_not?, only: %i[get_created_recipe get_saved_recipe]
+  before_action :authorize_request, only: %i[my_profile get_draft_recipes get_rejected_recipes get_pending_recipes]
+  # before_action :authorize_request_or_not?, only: %i[get_created_recipe]
 
   def email_login
     user = User.find_by(email:email_login_params[:email].downcase)
@@ -22,13 +22,9 @@ class UsersController < ApplicationController
     end
   end
 
-  def get_created_recipe
+  def get_created_recipes
     if(user=User.find_by(username:params[:username]))
-      if(@current_user && @current_user.username == params[:username])
-        recipes=Recipe.joins(:user).where(user: { username: params[:username] })
-      else
-        recipes=Recipe.published.joins(:user).where(user: { username: params[:username] })
-      end
+      recipes=Recipe.published.joins(:user).where(user: { username: params[:username] })
       render json: {
         "status": 200,
         "message": "Sucess",
@@ -44,13 +40,9 @@ class UsersController < ApplicationController
     end
   end
 
-  def get_saved_recipe
+  def get_saved_recipes
     if(user=User.find_by(username:params[:username]))
-      if(@current_user && @current_user.username == params[:username])
-        recipes=Recipe.joins(:recipe_saved_by_user).joins(:user).where(user: { username: params[:username] })
-      else
-        recipes=Recipe.published.joins(:recipe_saved_by_user).joins(:user).where(user: { username: params[:username] })
-      end
+      recipes=Recipe.published.joins(:recipe_saved_by_user).joins(:user).where(user: { username: params[:username] })
       render json: {
         "status": 200,
         "message": "Sucess",
@@ -64,6 +56,39 @@ class UsersController < ApplicationController
         "message":"User not found"
       },status: :not_found
     end
+  end
+
+  def get_draft_recipes
+    recipes=Recipe.draft.joins(:user).where(user: { username: @current_user.username })
+    render json: {
+      "status": 200,
+      "message": "Sucess",
+      "data": {
+        "recipes": recipes.map { |r| r.as_json(Recipe.recipe_attr,@current_user) }
+      }
+    }, status: :ok 
+  end
+
+  def get_rejected_recipes
+    recipes=Recipe.rejected.joins(:user).where(user: { username: @current_user.username })
+    render json: {
+      "status": 200,
+      "message": "Sucess",
+      "data": {
+        "recipes": recipes.map { |r| r.as_json(Recipe.recipe_attr,@current_user) }
+      }
+    }, status: :ok 
+  end
+
+  def get_pending_recipes
+    recipes=Recipe.pending.joins(:user).where(user: { username: @current_user.username })
+    render json: {
+      "status": 200,
+      "message": "Sucess",
+      "data": {
+        "recipes": recipes.map { |r| r.as_json(Recipe.recipe_attr,@current_user) }
+      }
+    }, status: :ok 
   end
 
   def email_registration

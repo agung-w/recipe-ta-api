@@ -19,6 +19,18 @@ class Recipe < ApplicationRecord
     where(is_published: true)
   }
 
+  scope :draft, -> {
+    where(is_published: [false, nil])
+  }
+
+  scope :rejected, -> {
+    where(is_published: false)
+  }
+
+  scope :pending, -> {
+    where(is_published: nil)
+  }
+
   def as_json(options=nil,user=nil)
     super({ only: [:id,:title, :poster_pic_url, :serving, :prep_time,:description,:is_published , :created_at] }.merge(options || {})).merge(is_saved:is_saved(user))
   end

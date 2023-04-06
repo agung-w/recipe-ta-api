@@ -8,8 +8,11 @@ Rails.application.routes.draw do
   post '/login/email', to: 'users#email_login'
   get '/profile/:username', to: 'users#profile', :as => 'profile'
   get '/my-profile', to: 'users#my_profile'
-  get '/created-recipe-by', to: 'users#get_created_recipe', :as => 'created-recipe-by'
-  get '/saved-recipe-by', to: 'users#get_saved_recipe', :as => 'saved-recipe-by'
+  get '/created-recipe-by', to: 'users#get_created_recipes', :as => 'created-recipe-by'
+  get '/saved-recipe-by', to: 'users#get_saved_recipes', :as => 'saved-recipe-by'
+  get '/draft-recipes', to: 'users#get_draft_recipes'
+  get '/rejected-recipes', to: 'users#get_rejected_recipes'
+  get '/pending-recipes', to: 'users#get_pending_recipes'
 
   post '/follow', to: 'follows#follow'
   delete '/unfollow', to: 'follows#unfollow'
@@ -18,8 +21,7 @@ Rails.application.routes.draw do
   get '/recipe/:id', to: 'recipes#show', :as => 'recipe'
   get '/search/recipe/by-title', to: 'recipes#search_by_title', :as => 'search-recipe-by-title'
   get '/search/recipe/by-ingredient', to: 'recipes#search_by_ingredient', :as => 'search-recipe-by-ingredient'
-  get '/created-recipe', to: 'recipes#get_created_recipe'
-  get '/saved-recipe', to: 'recipes#get_saved_recipe'
+
 
   get '/recipe-comments/:id', to: 'recipe_comments#show_all', :as => 'recipe-comments'
   get '/first-recipe-comment/:id', to: 'recipe_comments#show', :as => 'first-recipe-comment'
