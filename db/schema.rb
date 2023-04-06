@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_06_070315) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_06_082617) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -47,6 +47,25 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_06_070315) do
     t.float "weight"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "orders", id: false, force: :cascade do |t|
+    t.string "id", null: false
+    t.bigint "user_id", null: false
+    t.string "shipping_address", null: false
+    t.float "shipping_fee", null: false
+    t.float "payment_fee", null: false
+    t.float "order_total", null: false
+    t.float "total", null: false
+    t.string "status", null: false
+    t.datetime "order_time", precision: nil, null: false
+    t.datetime "paid_time", precision: nil
+    t.datetime "sent_time", precision: nil
+    t.datetime "finished_time", precision: nil
+    t.datetime "cancel_time", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
   create_table "recipe_bundles", force: :cascade do |t|
@@ -138,6 +157,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_06_070315) do
   add_foreign_key "cooking_steps", "recipes"
   add_foreign_key "follows", "users"
   add_foreign_key "follows", "users", column: "followed_id"
+  add_foreign_key "orders", "users"
   add_foreign_key "recipe_bundles", "recipes"
   add_foreign_key "recipe_comments", "recipes"
   add_foreign_key "recipe_comments", "users"
