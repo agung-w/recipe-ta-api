@@ -49,7 +49,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_06_070315) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "recipe_bundles", id: false, force: :cascade do |t|
+  create_table "recipe_bundles", force: :cascade do |t|
     t.bigint "recipe_id", null: false
     t.string "description", null: false
     t.string "title", null: false

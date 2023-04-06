@@ -36,6 +36,9 @@ Rails.application.routes.draw do
 
 
   get '/metric/list', to: 'metrics#list'
+
+  get '/recipe-bundles/:id', to: 'recipe_bundles#show_all', :as => 'recipe-bundles'
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")

@@ -1,6 +1,6 @@
 class CreateRecipeBundles < ActiveRecord::Migration[7.0]
   def change
-    create_table :recipe_bundles, id: false, primary_key: %i[recipe] do |t|
+    create_table :recipe_bundles do |t|
       t.references :recipe, null: false, foreign_key: {to_table: :recipes}
       t.string :description, null: false
       t.string :title, null: false
