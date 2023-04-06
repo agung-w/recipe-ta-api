@@ -15,8 +15,12 @@ class Recipe < ApplicationRecord
 
   accepts_nested_attributes_for :recipe_ingredients,:cooking_steps,:recipe_tags
 
+  scope :published, -> {
+    where(is_published: true)
+  }
+
   def as_json(options=nil,user=nil)
-    super({ only: [:id,:title, :poster_pic_url, :serving, :prep_time,:description, :created_at] }.merge(options || {})).merge(is_saved:is_saved(user))
+    super({ only: [:id,:title, :poster_pic_url, :serving, :prep_time,:description,:is_published , :created_at] }.merge(options || {})).merge(is_saved:is_saved(user))
   end
 
   def self.recipe_attr

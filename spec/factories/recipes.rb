@@ -7,5 +7,6 @@ FactoryBot.define do
     prep_time { 1 }
     serving { 1 }
     association :user
+    is_published {true}
   end
 end

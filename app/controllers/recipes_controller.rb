@@ -1,7 +1,6 @@
 class RecipesController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :authorize_request, only: %i[create show get_created_recipe]
-  before_action :authorize_request_or_not?, only: %i[search_by_title search_by_ingredient]
   before_action :query_param, only: %i[search_by_title search_by_ingredient]
   def create
     recipe=Recipe.new(recipe_params)
@@ -24,13 +23,20 @@ class RecipesController < ApplicationController
   def show
     recipe=Recipe.find_by(id:params[:id])
     if recipe
-      render json: {
-        "status": 200,
-        "message": "Sucess",
-        "data": {
-          "recipe": recipe.as_json(Recipe.recipe_detail_attr,@current_user)
-        }
-      }, status: :ok 
+      if(recipe.is_published==true || recipe.user_id==@current_user.id)
+        render json: {
+          "status": 200,
+          "message": "Sucess",
+          "data": {
+            "recipe": recipe.as_json(Recipe.recipe_detail_attr,@current_user)
+          }
+        }, status: :ok 
+      else
+        render json:{
+          "status": 422,
+          "message": "Recipe not published yet"
+        },status: :unprocessable_entity
+      end
     else
       render json:{
         "status": 404,
@@ -40,7 +46,7 @@ class RecipesController < ApplicationController
   end
 
   def search_by_title
-    recipes=Recipe.where("lower(title) LIKE '%#{query_param.downcase}%'")
+    recipes=Recipe.published.where("lower(title) LIKE '%#{query_param.downcase}%'")
     if recipes
       render json: {
         "status": 200,
@@ -58,7 +64,7 @@ class RecipesController < ApplicationController
   end
 
   def search_by_ingredient
-    recipes=Recipe.joins(:recipe_ingredients).joins(:ingredients).where("lower(ingredients.name) SIMILAR TO '%#{query_param.split(',')}%' ").distinct
+    recipes=Recipe.published.joins(:recipe_ingredients).joins(:ingredients).where("lower(ingredients.name) SIMILAR TO '%#{query_param.split(',')}%' ").distinct
     if recipes
       render json: {
         "status": 200,
