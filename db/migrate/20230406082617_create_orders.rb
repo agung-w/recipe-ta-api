@@ -1,7 +1,7 @@
 class CreateOrders < ActiveRecord::Migration[7.0]
   def change
-    create_table :orders, id: false, primary_key: %i[id] do |t|
-      t.string :id, null: false
+    create_table :orders, id: false do |t|
+      t.string :id, primary_key: true
       t.references :user, null: false, foreign_key: {to_table: :users}
       t.string :shipping_address, null: false
       t.float :shipping_fee, null: false
