@@ -20,6 +20,9 @@ class OrdersController < ApplicationController
       render json: {
         "status": 422,
         "message": "Location too far",
+        "data": {
+          "distance": "#{distance} km",
+        }
       }, status: :unprocessable_entity 
     end
   end
