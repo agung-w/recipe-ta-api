@@ -7,4 +7,6 @@ class Order < ApplicationRecord
   validates :total, :numericality => { :greater_than_or_equal_to => 0 }
   validates :status, presence: true
   validates :order_time, presence: true
+  validates :recipient_name, presence: true
+  validates :recipient_contact, numericality: true
 end

@@ -12,6 +12,8 @@ FactoryBot.define do
     paid_time { "2023-04-06 15:26:17" }
     sent_time { "2023-04-06 15:26:17" }
     finished_time { "2023-04-06 15:26:17" }
-    cancel_time { "2023-04-06 15:26:17" }
+    shipping_address_notes { "MyString" }
+    recipient_name { "MyString" }
+    recipient_contact { "81232323" }
   end
 end
