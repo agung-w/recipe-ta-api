@@ -41,7 +41,12 @@ Rails.application.routes.draw do
 
   get '/recipe-bundles/:id', to: 'recipe_bundles#show_all', :as => 'recipe-bundles'
   
-  get '/shipping-fee', to:'orders#shipping_fee'
+  scope '/order' do
+    get '/shipping-fee', to:'orders#shipping_fee'
+    post '/create', to:'orders#create'
+    put '/cancel', to:'orders#cancel', :as => 'order-cancel'
+  end
+  
 
   scope '/admin' do
     post '/recipe-bundle/create', to: 'recipe_bundles#create'
