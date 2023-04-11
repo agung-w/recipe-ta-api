@@ -40,7 +40,13 @@ Rails.application.routes.draw do
   get '/metric/list', to: 'metrics#list'
 
   get '/recipe-bundles/:id', to: 'recipe_bundles#show_all', :as => 'recipe-bundles'
+  
 
+  scope '/admin' do
+    post '/recipe-bundle/create', to: 'recipe_bundles#create'
+    put '/recipe/change/publish-status/:id', to: 'recipes#change_pending_recipe_publish_status'
+    get '/recipe/pending-list', to: 'recipes#get_pending_recipes'
+  end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")

@@ -81,6 +81,55 @@ class RecipesController < ApplicationController
     end
   end
   
+  def change_pending_recipe_publish_status
+    recipe=Recipe.pending.find_by(id:params[:id])
+    if recipe
+      status=params[:status].to_s.downcase
+      if(status=="rejected"||status=="false"||status=="reject")
+        recipe.is_published=false
+      elsif(status=="approved"||status=="true"||status=="approve")
+        recipe.is_published=true
+      end
+      if recipe.save! && recipe.is_published!=nil
+        render json: {
+          "status": 200,
+          "message": "Sucess",
+          "data": {
+            "recipe": recipe.as_json(Recipe.recipe_detail_attr)
+          }
+        }, status: :ok 
+      else
+        render json:{
+          "status": 422,
+          "message": "Invalid status param"
+        },status: :unprocessable_entity
+      end
+    else
+      render json:{
+        "status": 404,
+        "message": "Pending recipe not found"
+      },status: :not_found
+    end
+  end
+
+  def get_pending_recipes
+    recipes=Recipe.pending
+    if recipes
+      render json: {
+        "status": 200,
+        "message": "Sucess",
+        "data": {
+          "recipes": recipes.map { |r| r.as_json(Recipe.recipe_attr,@current_user) }
+        }
+      }, status: :ok 
+    else
+      render json:{
+        "status": 404,
+        "message": recipe.errors
+      },status: :not_found
+    end
+  end
+
   private
   def recipe_params
     params.require(:recipe).permit(

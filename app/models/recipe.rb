@@ -58,5 +58,4 @@ class Recipe < ApplicationRecord
   def is_saved(user)
     RecipeSavedByUser.find_by(user:user,recipe:self.id) ? true : nil
   end
-
 end
