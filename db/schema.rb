@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_11_083202) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_11_135653) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -79,6 +79,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_11_083202) do
     t.string "shipping_address_notes"
     t.string "recipient_name", null: false
     t.string "recipient_contact", null: false
+    t.string "order_payment_id"
+    t.string "order_payment_link"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 

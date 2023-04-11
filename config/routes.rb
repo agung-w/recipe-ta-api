@@ -45,6 +45,7 @@ Rails.application.routes.draw do
     get '/shipping-fee', to:'orders#shipping_fee'
     post '/create', to:'orders#create'
     put '/cancel', to:'orders#cancel', :as => 'order-cancel'
+    get '/history', to:'orders#show_all'
   end
   
 

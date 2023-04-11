@@ -44,7 +44,7 @@ module OrdersHelper
     params
   end
 
-  def create_payment_link(id,total,name,email,phone)
+  def create_payment_link(order)
     url = URI(ENV['ORDER_BASE_URL'])
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = true
@@ -53,21 +53,31 @@ module OrdersHelper
     request = Net::HTTP::Post.new(url)
     request.basic_auth(ENV['DURIAN_PAY_API_KEY'], '')
     request.body = {
-      "amount" => "#{total}",
+      "amount" => "#{order.total}",
       "currency" => "IDR",
-      "order_ref_id" => "#{id}",
+      "order_ref_id" => "#{order.id}",
       "is_payment_link" => true,
       "customer" => { 
-        "given_name" => "#{name}",
+        "given_name" => "#{order.recipient_name}",
         "email" => "#{@current_user.email}",
-        "mobile" => "#{phone}",
+        "mobile" => "#{order.recipient_contact}",
       },
     }.to_json
     response = http.request(request)
     if(response.code.to_s != "201")
       raise Exceptions::PaymentError.new("Cant create payment link")
+      cancel_order(order)
     end
-    ENV['PAYMENT_BASE_URL']+JSON.parse(response.body)["data"]["payment_link_url"]
+    result=JSON.parse(response.body)["data"]
+    order.order_payment_id=result["id"]
+    order.order_payment_link=ENV['PAYMENT_BASE_URL']+result["payment_link_url"]
+    if order.save
+      order.order_payment_link
+    else
+      raise Exceptions::PaymentError.new("Cant create payment link")
+      cancel_order(order)
+    end
+    
   end
 
   def cancel_order(order)
@@ -83,6 +93,6 @@ module OrdersHelper
     else
       raise Exceptions::OrderError.new("Cannot cancel, order is already #{order.status}")
     end
-    
   end
+  
 end

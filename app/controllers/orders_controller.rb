@@ -32,13 +32,13 @@ class OrdersController < ApplicationController
         bundle.stock=bundle.stock-n[:quantity]
         bundle.save
       end
-      
+      payment_link=helpers.create_payment_link(order)
       render json: {
         "status": 200,
         "message": "Sucess",
         "data": {
           "order_id": order.id,
-          "payment_link": helpers.create_payment_link(order.id,order.total,order.recipient_name,@current_user.email,order.recipient_contact)
+          "payment_link": payment_link
         }
       }, status: :ok 
     else
@@ -74,6 +74,18 @@ class OrdersController < ApplicationController
         "message":e.to_s
       },status: :unprocessable_entity
   end
+
+  def show_all
+    order=Order.newest.where(user_id:@current_user.id)
+    render json: {
+      "status": 200,
+      "message": "Success",
+      "data":{
+        "orders": order.as_json(Order.order_attr)
+      }
+    }, status: :ok 
+  end
+  
 
   private
   def order_params
