@@ -1,6 +1,6 @@
 class OrdersController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :authorize_request
+  before_action :authorize_request, except: %i[change_status_to_sent]
   RADIUS_COVERED=20
   def shipping_fee
     distance=helpers.distance([-6.947089, 107.577242],params[:latlong])
@@ -87,6 +87,37 @@ class OrdersController < ApplicationController
   end
   
 
+  def change_status_to_sent
+    order=Order.find_by(id:params[:id])
+    helpers.sent_order(order)
+    render json: {
+      "status": 200,
+      "message": "Success",
+    }, status: :ok 
+    rescue Exceptions::OrderError => e
+      render json:{ 
+        "status": 422,
+        "message":e.to_s
+      },status: :unprocessable_entity
+  end
+
+  def change_status_to_finished
+    order=Order.find_by(id:params[:id])
+    helpers.finished_order(order)
+    render json: {
+      "status": 200,
+      "message": "Success",
+      "data":{
+        "orders": order.as_json(Order.order_attr)
+      }
+    }, status: :ok 
+    rescue Exceptions::OrderError => e
+      render json:{ 
+        "status": 422,
+        "message":e.to_s
+      },status: :unprocessable_entity
+  end
+  
   private
   def order_params
     params.require(:order).permit(

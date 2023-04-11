@@ -16,7 +16,12 @@ class Order < ApplicationRecord
   scope :unpaid, -> {
     where(status: 'unpaid')
   }
-
+  scope :paid, -> {
+    where(status: 'paid')
+  }
+  scope :sent, -> {
+    where(status: 'sent')
+  }
   scope :newest, -> { order(order_time: :desc) }
 
   def as_json(options=nil,user=nil)

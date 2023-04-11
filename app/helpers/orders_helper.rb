@@ -95,4 +95,40 @@ module OrdersHelper
     end
   end
   
+  def sent_order(order)
+    if order
+      if order.status=="paid"
+        order.status="sent"
+        order.sent_time=params[:sent_time]!=nil ? params[:sent_time] : Time.now
+        order.save
+      else
+        if(order.status == "finished" || order.status == "sent" )
+          raise Exceptions::OrderError.new("Cannot sent order, order is already #{order.status}")
+        else
+          raise Exceptions::OrderError.new("Cannot sent order, order is not paid")
+        end
+      end
+    else
+      raise Exceptions::OrderError.new("Order not found")
+    end
+  end
+
+  def finished_order(order)
+    if order
+      if order.status=="sent"
+        order.status="finished"
+        order.finished_time=params[:finished_time]!=nil ? params[:finished_time] : Time.now
+        order.save
+      else
+        if(order.status == "finished" )
+          raise Exceptions::OrderError.new("Cannot sent order, order is already finished")
+        else
+          raise Exceptions::OrderError.new("Cannot finish order, order is not sent")
+        end
+      end
+    else
+      raise Exceptions::OrderError.new("Order not found")
+    end
+    
+  end
 end
