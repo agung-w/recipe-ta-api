@@ -38,7 +38,7 @@ class OrdersController < ApplicationController
       payment_link=helpers.create_payment_link(order)
       render json: {
         "status": 200,
-        "message": "Sucess",
+        "message": "Success",
         "data": {
           "order_id": order.id,
           "payment_link": payment_link

@@ -10,11 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_12_154143) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_12_163605) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "cooking_steps", id: false, force: :cascade do |t|
+  create_table "cooking_steps", primary_key: ["recipe_id", "step"], force: :cascade do |t|
     t.bigint "recipe_id", null: false
     t.integer "step", null: false
     t.string "description", limit: 1000, null: false
@@ -49,7 +49,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_12_154143) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "order_details", id: false, force: :cascade do |t|
+  create_table "order_details", primary_key: ["order_id", "recipe_bundle_id"], force: :cascade do |t|
     t.string "order_id", null: false
     t.bigint "recipe_bundle_id", null: false
     t.integer "quantity", null: false
@@ -129,7 +129,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_12_154143) do
     t.index ["user_id"], name: "index_recipe_saved_by_users_on_user_id"
   end
 
-  create_table "recipe_tags", id: false, force: :cascade do |t|
+  create_table "recipe_tags", primary_key: ["recipe_id", "tag_id"], force: :cascade do |t|
     t.bigint "recipe_id", null: false
     t.bigint "tag_id", null: false
     t.datetime "created_at", null: false
