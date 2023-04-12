@@ -44,7 +44,7 @@ class RecipeCommentsController < ApplicationController
 
   private
   def comment_params
-    params.require(:comment).permit(:recipe_id, :content).with_defaults(user_id: @current_user.id)
+    params.require(:comment).permit(:recipe_id, :content).with_defaults(user_id: @current_user.id,timestamp:Time.now)
   end
 
 end

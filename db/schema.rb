@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_11_135653) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_12_154143) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -96,12 +96,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_11_135653) do
     t.index ["recipe_id"], name: "index_recipe_bundles_on_recipe_id"
   end
 
-  create_table "recipe_comments", id: false, force: :cascade do |t|
+  create_table "recipe_comments", primary_key: ["timestamp", "recipe_id", "user_id"], force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "recipe_id", null: false
     t.string "content", limit: 3000, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "timestamp", precision: nil, null: false
     t.index ["recipe_id"], name: "index_recipe_comments_on_recipe_id"
     t.index ["user_id"], name: "index_recipe_comments_on_user_id"
   end
