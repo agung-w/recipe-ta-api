@@ -25,7 +25,7 @@ class Order < ApplicationRecord
   scope :newest, -> { order(order_time: :desc) }
 
   def as_json(options=nil,user=nil)
-    super({ only: [:id,:shipping_address,:shipping_address_notes,:recipient_name,:recipient_contact, :total, :order_time, :status] }.merge(options || {}))
+    super({ only: [:id,:shipping_address,:shipping_address_notes,:recipient_name,:recipient_contact, :total, :order_time, :status, :order_payment_link] }.merge(options || {}))
   end
 
   def self.order_attr
@@ -35,7 +35,7 @@ class Order < ApplicationRecord
       ]
     }
   end
-  
+
   def self.generate_id(now)
     "ord_"+("#{now}+#{self.count+1}").to_i.to_s(16).to_s.rjust(12, '0')
   end

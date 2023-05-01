@@ -46,6 +46,7 @@ Rails.application.routes.draw do
     post '/create', to:'orders#create'
     put '/cancel', to:'orders#cancel', :as => 'order-cancel'
     get '/history', to:'orders#show_all'
+    put '/check-payment-status', to:'orders#check_payment_status', :as => 'order-check-payment-status'
   end
   
 

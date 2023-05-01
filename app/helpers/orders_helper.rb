@@ -45,7 +45,7 @@ module OrdersHelper
   end
 
   def create_payment_link(order)
-    url = URI(ENV['ORDER_BASE_URL'])
+    url = URI("#{ENV['DURIAN_API_BASE_URL']}/orders")
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -53,7 +53,8 @@ module OrdersHelper
     request = Net::HTTP::Post.new(url)
     request.basic_auth(ENV['DURIAN_PAY_API_KEY'], '')
     request.body = {
-      "amount" => "#{order.total}",
+      "amount" => "#{order.order_total}",
+      "shipping_fee" => "#{order.shipping_fee}",
       "currency" => "IDR",
       "order_ref_id" => "#{order.id}",
       "is_payment_link" => true,
@@ -70,7 +71,7 @@ module OrdersHelper
     end
     result=JSON.parse(response.body)["data"]
     order.order_payment_id=result["id"]
-    order.order_payment_link=ENV['PAYMENT_BASE_URL']+result["payment_link_url"]
+    order.order_payment_link=ENV['DURIAN_PAYMENT_URL']+result["payment_link_url"]
     if order.save
       order.order_payment_link
     else
@@ -129,6 +130,29 @@ module OrdersHelper
     else
       raise Exceptions::OrderError.new("Order not found")
     end
-    
+  end
+
+  def check_payment_status(order)
+    if order
+      url = URI("#{ENV['DURIAN_API_BASE_URL']}/orders/#{order.order_payment_id}")
+      http = Net::HTTP.new(url.host, url.port)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+      request = Net::HTTP::Get.new(url)
+      request.basic_auth(ENV['DURIAN_PAY_API_KEY'], '')
+      response = http.request(request)
+      if(response.code.to_s != "200")
+        raise Exceptions::PaymentError.new("Cant validate transaction now")
+      end
+      result=JSON.parse(response.body)["data"]
+      if(result["status"]=="completed")
+        order.status="paid"
+        order.paid_time=Time.now
+        order.save
+      end
+    else
+      raise Exceptions::OrderError.new("Order not found")
+    end
   end
 end

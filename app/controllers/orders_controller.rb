@@ -40,8 +40,7 @@ class OrdersController < ApplicationController
         "status": 200,
         "message": "Success",
         "data": {
-          "order_id": order.id,
-          "payment_link": payment_link
+          "order": order.as_json(Order.order_attr)
         }
       }, status: :ok 
     else
@@ -106,7 +105,7 @@ class OrdersController < ApplicationController
 
   def change_status_to_finished
     order=Order.find_by(id:params[:id])
-    helpers.finished_order(order)
+    helpers.refresh_payment_status(order)
     render json: {
       "status": 200,
       "message": "Success",
@@ -121,6 +120,23 @@ class OrdersController < ApplicationController
       },status: :unprocessable_entity
   end
   
+  def check_payment_status
+    order=Order.find_by(id:params[:id])
+    helpers.check_payment_status(order)
+    render json: {
+      "status": 200,
+      "message": "Success",
+      "data":{
+        "order": order.as_json(Order.order_attr)
+      }
+    }, status: :ok 
+    rescue Exceptions::OrderError => e
+      render json:{ 
+        "status": 422,
+        "message":e.to_s
+      },status: :unprocessable_entity
+  end
+
   private
   def order_params
     params.require(:order).permit(
