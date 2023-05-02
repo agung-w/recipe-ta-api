@@ -2,6 +2,7 @@ class RecipesController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :authorize_request, only: %i[create show get_created_recipe]
   before_action :query_param, only: %i[search_by_title search_by_ingredient]
+  before_action :authorize_request_or_not?, only: %i[search_by_title search_by_ingredient get_random_list]
   def create
     recipe=Recipe.new(recipe_params)
     if recipe.save
@@ -80,7 +81,7 @@ class RecipesController < ApplicationController
       },status: :not_found
     end
   end
-  
+
   def get_random_list
     recipes=Recipe.published.order("RANDOM()").limit(100)
     render json: {
