@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   get '/recipe/:id', to: 'recipes#show', :as => 'recipe'
   get '/search/recipe/by-title', to: 'recipes#search_by_title', :as => 'search-recipe-by-title'
   get '/search/recipe/by-ingredient', to: 'recipes#search_by_ingredient', :as => 'search-recipe-by-ingredient'
+  get '/random-recipe-list', to: 'recipes#get_random_list'
 
 
   get '/recipe-comments/:id', to: 'recipe_comments#show_all', :as => 'recipe-comments'

@@ -81,6 +81,17 @@ class RecipesController < ApplicationController
     end
   end
   
+  def get_random_list
+    recipes=Recipe.published.order("RANDOM()").limit(100)
+    render json: {
+      "status": 200,
+      "message": "Sucess",
+      "data": {
+        "recipes": recipes.map { |r| r.as_json(Recipe.recipe_attr,@current_user) }
+      }
+    }, status: :ok 
+  end
+
   def change_pending_recipe_publish_status
     recipe=Recipe.pending.find_by(id:params[:id])
     if recipe
