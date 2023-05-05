@@ -16,4 +16,15 @@ class IngredientsController < ApplicationController
       },status: :unprocessable_entity
     end
   end
+
+  def get_random_ingredient
+    ingredient=Ingredient.verified.order("RANDOM()").first
+    render json: {
+      "status": 200,
+      "message": "Sucess",
+      "data": {
+        "ingredient": ingredient.as_json(Ingredient.ingredient_attr)
+      }
+    }, status: :ok 
+  end
 end
