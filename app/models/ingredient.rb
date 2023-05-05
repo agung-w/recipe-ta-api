@@ -4,4 +4,8 @@ class Ingredient < ApplicationRecord
   def self.ingredient_attr
     {only:[:id,:name,:pic_url]}
   end
+
+  scope :verified, -> {
+    where(verify_status: true)
+  }
 end

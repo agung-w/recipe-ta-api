@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :authorize_request, only: %i[my_profile get_draft_recipes get_rejected_recipes get_pending_recipes]
-  # before_action :authorize_request_or_not?, only: %i[get_created_recipe]
+  before_action :authorize_request_or_not?, only: %i[get_created_recipes get_saved_recipes]
 
   def email_login
     user = User.find_by(email:email_login_params[:email].downcase)
@@ -29,7 +29,7 @@ class UsersController < ApplicationController
         "status": 200,
         "message": "Sucess",
         "data": {
-          "recipes": recipes.map { |r| r.as_json(Recipe.recipe_attr,user) }
+          "recipes": recipes.map { |r| r.as_json(Recipe.recipe_attr,@current_user) }
         }
       }, status: :ok
     else
@@ -42,12 +42,12 @@ class UsersController < ApplicationController
 
   def get_saved_recipes
     if(user=User.find_by(username:params[:username]))
-      recipes=Recipe.published.joins(:recipe_saved_by_user).joins(:user).where(user: { username: params[:username] })
+      recipes=Recipe.published.joins(:recipe_saved_by_user).joins(:user).where("recipe_saved_by_users.user_id=#{user.id}")
       render json: {
         "status": 200,
         "message": "Sucess",
         "data": {
-          "recipes": recipes.map { |r| r.as_json(Recipe.recipe_attr,user) }
+          "recipes": recipes.map { |r| r.as_json(Recipe.recipe_attr,@current_user) }
         }
       }, status: :ok 
     else

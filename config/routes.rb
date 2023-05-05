@@ -30,9 +30,11 @@ Rails.application.routes.draw do
 
   put '/save-recipe/:id', to: 'save_recipes#save', :as => 'save-recipe'
   delete '/save-recipe/:id', to: 'save_recipes#remove'
-
-  get '/ingredient/find', to: 'ingredients#find', :as => 'ingredient-find'
-
+  
+  scope '/ingredient' do
+    get '/find', to: 'ingredients#find', :as => 'ingredient-find'
+    get '/random', to: 'ingredients#get_random_ingredient'
+  end
 
   get '/tag/list', to: 'tags#list'
   get '/tag/find', to: 'tags#find', :as => 'tag-find'
