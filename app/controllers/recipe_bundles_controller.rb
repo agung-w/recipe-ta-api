@@ -6,27 +6,36 @@ class RecipeBundlesController < ApplicationController
       "status": 200,
       "message": "Sucess",
       "data": {
-        "recipe_bundles": bundles.as_json()
+        "recipe_bundles": bundles.as_json
       }
     }, status: :ok 
   end
 
   def create
-    bundle=RecipeBundle.new(bundle_params)
-    if bundle.save
-      render json: {
-        "status": 200,
-        "message": "Sucess",
-        "data": {
-          "recipe_bundle": bundle.as_json
-        }
-      }, status: :ok 
+    recipe=Recipe.published.where(id:bundle_params[:recipe_id]).first
+    if (recipe)
+      bundle=RecipeBundle.new(bundle_params)
+      if bundle.save
+        render json: {
+          "status": 200,
+          "message": "Sucess",
+          "data": {
+            "recipe_bundle": bundle.as_json
+          }
+        }, status: :ok 
+      else
+        render json:{
+          "status": 422,
+          "message": bundle.errors
+        },status: :unprocessable_entity
+      end
     else
       render json:{
-        "status": 422,
-        "message": bundle.errors
+        "status": 404,
+        "message": "Recipe not found"
       },status: :unprocessable_entity
     end
+    
   end
 
   private
