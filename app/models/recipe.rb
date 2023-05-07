@@ -1,4 +1,6 @@
 class Recipe < ApplicationRecord
+  acts_as_paranoid
+  
   belongs_to :user
 
   validates :title, length: { maximum: 100 },presence: true

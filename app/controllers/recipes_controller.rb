@@ -1,6 +1,6 @@
 class RecipesController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :authorize_request, only: %i[create show get_created_recipe]
+  before_action :authorize_request, only: %i[create show delete]
   before_action :query_param, only: %i[search_by_title search_by_ingredient]
   before_action :authorize_request_or_not?, only: %i[search_by_title search_by_ingredient get_random_list]
   def create
@@ -140,6 +140,25 @@ class RecipesController < ApplicationController
         "message": recipe.errors
       },status: :not_found
     end
+  end
+
+  def delete
+    if helpers.delete(params[:id], @current_user)
+      render json: {
+        "status": 200,
+        "message": "Sucess"
+      }, status: :ok 
+    end
+    rescue Exceptions::RecipeError => e
+      render json:{ 
+        "status": 422,
+        "message":e.to_s
+      },status: :unprocessable_entity
+    rescue Exceptions::NotFoundError => e
+      render json:{ 
+        "status": 404,
+        "message":e.to_s
+      },status: :unprocessable_entity
   end
 
   private
