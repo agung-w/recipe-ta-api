@@ -34,7 +34,7 @@ class Recipe < ApplicationRecord
   }
 
   def as_json(options=nil,user=nil)
-    super({ only: [:id,:title, :poster_pic_url, :serving, :prep_time,:description,:is_published , :created_at] }.merge(options || {})).merge(is_saved:is_saved(user))
+    super({ only: [:id,:title, :poster_pic_url, :serving, :prep_time,:description,:is_published , :created_at] }.merge(options || {})).merge(is_saved:is_saved(user),is_owner:is_owner(user))
   end
 
   def self.recipe_attr
@@ -46,7 +46,7 @@ class Recipe < ApplicationRecord
     }
   end
 
-  def self.recipe_detail_attr
+  def self.recipe_detail_attr(user=nil)
     {include: 
       [
         {user:User.profile_attr},
@@ -59,5 +59,9 @@ class Recipe < ApplicationRecord
 
   def is_saved(user)
     RecipeSavedByUser.find_by(user:user,recipe:self.id) ? true : nil
+  end
+
+  def is_owner(user)
+    self.user==user ? true:nil
   end
 end

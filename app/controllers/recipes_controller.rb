@@ -1,6 +1,6 @@
 class RecipesController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :authorize_request, only: %i[create show delete]
+  before_action :authorize_request, only: %i[create show delete update]
   before_action :query_param, only: %i[search_by_title search_by_ingredient]
   before_action :authorize_request_or_not?, only: %i[search_by_title search_by_ingredient get_random_list]
   def create
@@ -161,9 +161,32 @@ class RecipesController < ApplicationController
       },status: :unprocessable_entity
   end
 
+  def update
+    if recipe=helpers.update(params[:id],recipe_params,@current_user)
+      render json: {
+        "status": 200,
+        "message": "Sucess",
+        "data": {
+          "recipe": recipe.as_json(Recipe.recipe_detail_attr,@current_user)
+        }
+      }, status: :ok 
+    end
+    rescue Exceptions::RecipeError => e
+      render json:{ 
+        "status": 422,
+        "message":e.to_s
+      },status: :unprocessable_entity
+    rescue Exceptions::NotFoundError => e
+      render json:{ 
+        "status": 404,
+        "message":e.to_s
+      },status: :unprocessable_entity
+  end
+
   private
   def recipe_params
     params.require(:recipe).permit(
+      :id,
       :title, 
       :description,
       :poster_pic_url,
