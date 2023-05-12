@@ -165,7 +165,7 @@ class RecipesController < ApplicationController
     if recipe=helpers.update(params[:id],recipe_params,@current_user)
       render json: {
         "status": 200,
-        "message": "Sucess",
+        "message": "Success",
         "data": {
           "recipe": recipe.as_json(Recipe.recipe_detail_attr,@current_user)
         }
