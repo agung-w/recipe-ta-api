@@ -16,6 +16,25 @@ module RecipesHelper
     end
   end
 
+  def search_by_ingredient(ingredients)
+    sql = 
+    "
+      SELECT DISTINCT recipes.*
+      FROM recipes
+      JOIN recipe_ingredients ON recipes.id = recipe_ingredients.recipe_id
+      JOIN ingredients ON ingredients.id=recipe_ingredients.ingredient_id
+      GROUP by recipes.id,recipe_ingredients.recipe_id
+    "
+    ingredients.split(',').each_with_index { |el, i|
+      if i==0
+        sql+=" HAVING COUNT(*) FILTER (WHERE ingredients.name LIKE '%#{el.downcase}%') > 0"
+      else
+        sql+=" AND COUNT(*) FILTER (WHERE ingredients.name LIKE '%#{el.downcase}%') > 0"
+      end
+    }
+    recipe = Recipe.find_by_sql(sql)
+  end
+
   def update(id,params,current_user)
     recipe=Recipe.find_by(id:id)
     if recipe==nil

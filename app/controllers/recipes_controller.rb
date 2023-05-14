@@ -65,7 +65,7 @@ class RecipesController < ApplicationController
   end
 
   def search_by_ingredient
-    recipes=Recipe.published.joins(:recipe_ingredients).joins(:ingredients).where("lower(ingredients.name) SIMILAR TO '%#{query_param.split(',')}%' ").distinct
+    recipes=helpers.search_by_ingredient(query_param)
     if recipes
       render json: {
         "status": 200,

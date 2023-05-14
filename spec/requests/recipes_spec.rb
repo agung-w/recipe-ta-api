@@ -113,7 +113,7 @@ RSpec.describe "Recipes", type: :request do
         ingredient=create(:ingredient,name:"wortel")
         recipe=create(:recipe,title:"MyString")
         recipe_ingredient=create(:recipe_ingredient,recipe:recipe,ingredient:ingredient)
-        get search_recipe_by_ingredient_url(query: "st" )
+        get search_recipe_by_ingredient_url(query: "wOrTel" )
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)["data"]["recipes"][0]["title"]).to eq("MyString")
         expect(JSON.parse(response.body)["data"]["recipes"].length).to eq(1)
