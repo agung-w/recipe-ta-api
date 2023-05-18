@@ -23,6 +23,8 @@ module RecipesHelper
       FROM recipes
       JOIN recipe_ingredients ON recipes.id = recipe_ingredients.recipe_id
       JOIN ingredients ON ingredients.id=recipe_ingredients.ingredient_id
+      WHERE is_published is TRUE
+      AND deleted_at is NULL
       GROUP by recipes.id,recipe_ingredients.recipe_id
     "
     ingredients.split(',').each_with_index { |el, i|
