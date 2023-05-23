@@ -105,7 +105,7 @@ class OrdersController < ApplicationController
 
   def change_status_to_finished
     order=Order.find_by(id:params[:id])
-    helpers.refresh_payment_status(order)
+    helpers.finished_order(order)
     render json: {
       "status": 200,
       "message": "Success",

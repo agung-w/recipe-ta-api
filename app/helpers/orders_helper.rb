@@ -146,7 +146,7 @@ module OrdersHelper
         raise Exceptions::PaymentError.new("Cant validate transaction now")
       end
       result=JSON.parse(response.body)["data"]
-      if(result["status"]=="completed")
+      if(result["status"]=="completed" && order.status=="unpaid")
         order.status="paid"
         order.paid_time=Time.now
         order.save
